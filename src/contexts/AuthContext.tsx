@@ -2,8 +2,9 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 
-interface BeneficiaryData {
+export interface BeneficiaryData {
   id: string;
+  user_id: string;
   nom: string;
   prenom: string;
   telephone: string;
