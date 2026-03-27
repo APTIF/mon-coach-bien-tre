@@ -45,7 +45,7 @@ function YesNo({ value, onChange }: { value: boolean | null; onChange: (v: boole
 }
 
 export default function Questionnaire() {
-  const { beneficiary, refreshBeneficiary } = useAuth();
+  const { beneficiary, refreshBeneficiary, user } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
