@@ -135,7 +135,7 @@ export default function Questionnaire() {
       await supabase.from('beneficiaries').update({
         questionnaire_completed: true,
         preferences_communication: prefsCom,
-      }).eq('user_id', beneficiary.user_id || (await supabase.auth.getUser()).data.user?.id);
+      }).eq('user_id', user!.id);
 
       await refreshBeneficiary();
       navigate('/transition');
