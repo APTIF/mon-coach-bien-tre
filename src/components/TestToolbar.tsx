@@ -1,37 +1,31 @@
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function TestToolbar() {
-  const { user, refreshBeneficiary } = useAuth();
+  const { user, updateBeneficiary } = useAuth();
   const navigate = useNavigate();
 
   if (import.meta.env.PROD || !user) return null;
 
-  const resetParcours = async () => {
-    await supabase.from('beneficiaries').update({
+  const resetParcours = () => {
+    updateBeneficiary({
       questionnaire_completed: false,
       subscription_active: false,
       statut: 'en_pause',
-    }).eq('user_id', user.id);
-    await supabase.from('questionnaire_inclusion').delete().eq('user_id', user.id);
-    await supabase.from('subscriptions').delete().eq('user_id', user.id);
-    await refreshBeneficiary();
+    });
     navigate('/accueil');
   };
 
-  const skipQuestionnaire = async () => {
-    await supabase.from('beneficiaries').update({ questionnaire_completed: true }).eq('user_id', user.id);
-    await refreshBeneficiary();
+  const skipQuestionnaire = () => {
+    updateBeneficiary({ questionnaire_completed: true });
     navigate('/formules');
   };
 
-  const skipPayment = async () => {
-    await supabase.from('beneficiaries').update({
+  const skipPayment = () => {
+    updateBeneficiary({
       subscription_active: true,
       statut: 'actif',
-    }).eq('user_id', user.id);
-    await refreshBeneficiary();
+    });
     navigate('/confirmation');
   };
 
