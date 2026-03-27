@@ -100,7 +100,7 @@ export default function Questionnaire() {
     setSubmitting(true);
     try {
       const { error } = await supabase.from('questionnaire_inclusion').insert({
-        user_id: beneficiary.user_id || (await supabase.auth.getUser()).data.user?.id,
+        user_id: user!.id,
         consentement_donnees: consentDonnees,
         consentement_sante: consentSante,
         activite_actuelle: activite,
