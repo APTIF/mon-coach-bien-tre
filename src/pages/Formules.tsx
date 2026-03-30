@@ -27,10 +27,7 @@ export default function Formules() {
     setLoading(plan);
 
     if (isMockMode) {
-      // Mock mode fallback
-      try {
-        const { updateBeneficiary } = useAuth();
-      } catch {}
+      updateBeneficiary({ subscription_active: true, statut: 'actif' });
       await new Promise(r => setTimeout(r, 500));
       navigate('/confirmation?payment=success');
       setLoading(null);
