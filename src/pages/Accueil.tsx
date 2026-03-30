@@ -15,13 +15,15 @@ export default function Accueil() {
 
   return (
     <div className="min-h-screen px-4 py-8 pb-24 max-w-lg mx-auto">
-      <h1 className="text-3xl font-bold text-primary text-center mb-8">APTIF</h1>
+      <div className="text-center mb-8">
+        <img src="/aptif-logo.png" alt="APTIF" className="mx-auto" style={{ maxHeight: '64px', width: 'auto' }} />
+      </div>
 
       {/* Qui sommes-nous */}
       <div className="card-warm mb-8">
         <h2 className="text-lg font-semibold mb-3">Qui sommes-nous ?</h2>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          APTIF est un programme d'Activité Physique Adaptée conçu pour les personnes en phase de post-réhabilitation (phase 3). Notre objectif : vous accompagner vers une reprise progressive, sécurisée et personnalisée de l'activité physique, en lien avec votre parcours de soin.
+          APTIF est une solution d'activité physique adaptée, conçue pour les personnes présentant des problématiques de santé. Notre objectif : vous accompagner vers une reprise progressive, sécurisée et personnalisée.
         </p>
       </div>
 

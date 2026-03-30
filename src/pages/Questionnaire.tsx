@@ -4,6 +4,41 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+
+function RGPDSection() {
+  const [open, setOpen] = useState(false);
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="mb-4">
+      <div
+        className="bg-white rounded-xl p-3 border border-border"
+        style={{ borderLeft: '3px solid #4a90e2' }}
+      >
+        <CollapsibleTrigger className="flex items-center justify-between w-full text-left">
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#2a2a2a' }}>
+            🔒 Politique de confidentialité APTIF
+          </span>
+          <span style={{ color: '#4a90e2', fontSize: '18px', fontWeight: 700, lineHeight: 1 }}>
+            {open ? '−' : '+'}
+          </span>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
+          <div className="pt-3" style={{ fontSize: '12px', color: '#888', lineHeight: 1.6 }}>
+            <p className="mb-2">
+              Vos données personnelles et de santé collectées dans ce questionnaire sont utilisées exclusivement par l'équipe APTIF dans le cadre de votre suivi en activité physique adaptée.
+            </p>
+            <p className="mb-2">
+              Conformément au RGPD (Règlement Général sur la Protection des Données), vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour toute demande : contact@aptif.fr
+            </p>
+            <p>
+              Vos données ne sont jamais transmises à des tiers sans votre consentement explicite.
+            </p>
+          </div>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
+  );
+}
 
 const TOTAL_STEPS = 11;
 
@@ -151,6 +186,8 @@ export default function Questionnaire() {
   return (
     <div className="min-h-screen px-4 py-8 pb-24 max-w-lg mx-auto">
       <h1 className="text-2xl font-bold text-primary text-center mb-2">Questionnaire d'inclusion</h1>
+
+      <RGPDSection />
 
       {/* Progress */}
       <div className="mb-6">

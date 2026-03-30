@@ -1,32 +1,61 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { Star } from 'lucide-react';
+import { Star, X, Loader2 } from 'lucide-react';
 
 export default function Formules() {
   const { user, refreshBeneficiary } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState<string | null>(null);
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (searchParams.get('payment') === 'cancelled') {
+      toast.error('Paiement annulé. Vous pouvez réessayer.', {
+        style: { background: '#ff7f7f', color: '#fff', border: 'none' },
+      });
+    }
+  }, [searchParams]);
+
+  const isMockMode = !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL === 'https://placeholder.supabase.co';
 
   const choosePlan = async (plan: string) => {
     if (!user) return;
     setLoading(plan);
+
+    if (isMockMode) {
+      // Mock mode fallback
+      try {
+        const { updateBeneficiary } = useAuth();
+      } catch {}
+      await new Promise(r => setTimeout(r, 500));
+      navigate('/confirmation?payment=success');
+      setLoading(null);
+      return;
+    }
+
     try {
-      await supabase.from('subscriptions').insert({
-        user_id: user.id,
-        plan,
-        statut: 'actif',
+      const { data, error } = await supabase.functions.invoke('create-mollie-payment', {
+        body: {
+          plan,
+          user_id: user.id,
+          redirect_base_url: window.location.origin,
+        },
       });
-      await supabase.from('beneficiaries').update({
-        subscription_active: true,
-        statut: 'actif',
-      }).eq('user_id', user.id);
-      await refreshBeneficiary();
-      navigate('/confirmation');
+
+      if (error) throw new Error(error.message || 'Erreur de paiement');
+      if (data?.checkoutUrl) {
+        setCheckoutUrl(data.checkoutUrl);
+      } else {
+        throw new Error('URL de paiement non disponible');
+      }
     } catch (err: any) {
-      toast.error(err.message || 'Erreur');
+      toast.error(err.message || 'Erreur lors de la création du paiement', {
+        style: { background: '#ff7f7f', color: '#fff', border: 'none' },
+      });
     } finally {
       setLoading(null);
     }
@@ -46,9 +75,9 @@ export default function Formules() {
           <button
             onClick={() => choosePlan('mensuel')}
             disabled={loading !== null}
-            className="btn-primary disabled:opacity-50"
+            className="btn-primary disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {loading === 'mensuel' ? 'Traitement...' : 'Choisir cette formule'}
+            {loading === 'mensuel' ? <><Loader2 size={16} className="animate-spin" /> Traitement...</> : 'Choisir cette formule'}
           </button>
         </div>
 
@@ -63,12 +92,32 @@ export default function Formules() {
           <button
             onClick={() => choosePlan('programme_complet')}
             disabled={loading !== null}
-            className="btn-primary disabled:opacity-50"
+            className="btn-primary disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {loading === 'programme_complet' ? 'Traitement...' : 'Choisir cette formule'}
+            {loading === 'programme_complet' ? <><Loader2 size={16} className="animate-spin" /> Traitement...</> : 'Choisir cette formule'}
           </button>
         </div>
       </div>
+
+      {/* Mollie Checkout Modal */}
+      {checkoutUrl && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="bg-card rounded-2xl w-full max-w-lg h-[80vh] flex flex-col overflow-hidden shadow-xl">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h3 className="font-semibold">Paiement sécurisé</h3>
+              <button onClick={() => setCheckoutUrl(null)} className="text-muted-foreground hover:text-foreground">
+                <X size={20} />
+              </button>
+            </div>
+            <iframe
+              src={checkoutUrl}
+              className="flex-1 w-full"
+              title="Paiement Mollie"
+              allow="payment"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

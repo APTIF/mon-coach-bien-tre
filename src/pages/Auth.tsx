@@ -99,7 +99,7 @@ export default function Auth() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary tracking-tight">APTIF</h1>
+          <img src="/aptif-logo.png" alt="APTIF" className="mx-auto" style={{ maxHeight: '64px', width: 'auto' }} />
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Votre programme d'activité physique adapté à votre santé
           </p>
