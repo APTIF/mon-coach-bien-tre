@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { Star, X, Loader2 } from 'lucide-react';
 
 export default function Formules() {
-  const { user, refreshBeneficiary } = useAuth();
+  const { user, refreshBeneficiary, updateBeneficiary } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState<string | null>(null);
@@ -27,10 +27,7 @@ export default function Formules() {
     setLoading(plan);
 
     if (isMockMode) {
-      // Mock mode fallback
-      try {
-        const { updateBeneficiary } = useAuth();
-      } catch {}
+      updateBeneficiary({ subscription_active: true, statut: 'actif' });
       await new Promise(r => setTimeout(r, 500));
       navigate('/confirmation?payment=success');
       setLoading(null);
