@@ -187,6 +187,8 @@ export default function Questionnaire() {
     <div className="min-h-screen px-4 py-8 pb-24 max-w-lg mx-auto">
       <h1 className="text-2xl font-bold text-primary text-center mb-2">Questionnaire d'inclusion</h1>
 
+      <RGPDSection />
+
       {/* Progress */}
       <div className="mb-6">
         <p className="text-center text-sm text-muted-foreground mb-2">Étape {step} sur {TOTAL_STEPS}</p>
