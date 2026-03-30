@@ -15,7 +15,9 @@ export default function Accueil() {
 
   return (
     <div className="min-h-screen px-4 py-8 pb-24 max-w-lg mx-auto">
-      <h1 className="text-3xl font-bold text-primary text-center mb-8">APTIF</h1>
+      <div className="text-center mb-8">
+        <img src="/aptif-logo.png" alt="APTIF" className="mx-auto" style={{ maxHeight: '64px', width: 'auto' }} />
+      </div>
 
       {/* Qui sommes-nous */}
       <div className="card-warm mb-8">
