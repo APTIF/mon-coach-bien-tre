@@ -65,17 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchBeneficiary(session.user.id);
-      } else {
-        setBeneficiary(null);
-      }
-      setLoading(false);
-    });
-
+    // Restore session from storage first
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -84,6 +74,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setLoading(false);
     });
+
+    // Handle subsequent auth changes (sign in/out) — do NOT await inside
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          fetchBeneficiary(session.user.id);
+        } else {
+          setBeneficiary(null);
+        }
+      }
+    );
 
     return () => subscription.unsubscribe();
   }, []);
