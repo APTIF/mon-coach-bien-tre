@@ -83,6 +83,105 @@ export type Database = {
         }
         Relationships: []
       }
+      questionnaire_inclusion: {
+        Row: {
+          a_douleurs: boolean | null
+          a_materiel: boolean | null
+          a_materiel_fc: boolean | null
+          a_pathologies: boolean | null
+          a_test_effort: boolean | null
+          a_traitement: boolean | null
+          activite_actuelle: string | null
+          consentement_donnees: boolean | null
+          consentement_sante: boolean | null
+          description_douleurs: string | null
+          duree_ideale_seance: string | null
+          freins: string[] | null
+          freins_autre: string | null
+          id: string
+          liste_materiel: string | null
+          liste_materiel_fc: string[] | null
+          liste_pathologies: string[] | null
+          liste_traitements: string | null
+          materiel_fc_autre: string | null
+          moment_forme: string | null
+          motivation_score: number | null
+          objectifs: string[] | null
+          objectifs_autre: string | null
+          pathologies_autre: string | null
+          resultats_test_effort: string | null
+          seances_par_semaine: string | null
+          submitted_at: string | null
+          temps_assis_par_jour: string | null
+          type_entrainement: string | null
+          user_id: string
+        }
+        Insert: {
+          a_douleurs?: boolean | null
+          a_materiel?: boolean | null
+          a_materiel_fc?: boolean | null
+          a_pathologies?: boolean | null
+          a_test_effort?: boolean | null
+          a_traitement?: boolean | null
+          activite_actuelle?: string | null
+          consentement_donnees?: boolean | null
+          consentement_sante?: boolean | null
+          description_douleurs?: string | null
+          duree_ideale_seance?: string | null
+          freins?: string[] | null
+          freins_autre?: string | null
+          id?: string
+          liste_materiel?: string | null
+          liste_materiel_fc?: string[] | null
+          liste_pathologies?: string[] | null
+          liste_traitements?: string | null
+          materiel_fc_autre?: string | null
+          moment_forme?: string | null
+          motivation_score?: number | null
+          objectifs?: string[] | null
+          objectifs_autre?: string | null
+          pathologies_autre?: string | null
+          resultats_test_effort?: string | null
+          seances_par_semaine?: string | null
+          submitted_at?: string | null
+          temps_assis_par_jour?: string | null
+          type_entrainement?: string | null
+          user_id: string
+        }
+        Update: {
+          a_douleurs?: boolean | null
+          a_materiel?: boolean | null
+          a_materiel_fc?: boolean | null
+          a_pathologies?: boolean | null
+          a_test_effort?: boolean | null
+          a_traitement?: boolean | null
+          activite_actuelle?: string | null
+          consentement_donnees?: boolean | null
+          consentement_sante?: boolean | null
+          description_douleurs?: string | null
+          duree_ideale_seance?: string | null
+          freins?: string[] | null
+          freins_autre?: string | null
+          id?: string
+          liste_materiel?: string | null
+          liste_materiel_fc?: string[] | null
+          liste_pathologies?: string[] | null
+          liste_traitements?: string | null
+          materiel_fc_autre?: string | null
+          moment_forme?: string | null
+          motivation_score?: number | null
+          objectifs?: string[] | null
+          objectifs_autre?: string | null
+          pathologies_autre?: string | null
+          resultats_test_effort?: string | null
+          seances_par_semaine?: string | null
+          submitted_at?: string | null
+          temps_assis_par_jour?: string | null
+          type_entrainement?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           created_at: string
