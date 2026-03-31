@@ -20,19 +20,9 @@ export default function Formules() {
     }
   }, [searchParams]);
 
-  const isMockMode = !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL === 'https://placeholder.supabase.co';
-
   const choosePlan = async (plan: string) => {
     if (!user) return;
     setLoading(plan);
-
-    if (isMockMode) {
-      updateBeneficiary({ subscription_active: true, statut: 'actif' });
-      await new Promise(r => setTimeout(r, 500));
-      navigate('/confirmation?payment=success');
-      setLoading(null);
-      return;
-    }
 
     try {
       const { data, error } = await supabase.functions.invoke('create-mollie-payment', {

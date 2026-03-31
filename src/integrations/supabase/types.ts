@@ -14,7 +14,102 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      beneficiaries: {
+        Row: {
+          created_at: string
+          date_inclusion: string
+          email: string
+          id: string
+          medecin_referent: string | null
+          nom: string
+          preferences_communication: Json | null
+          prenom: string
+          questionnaire_completed: boolean
+          statut: string
+          subscription_active: boolean
+          telephone: string
+          user_id: string
+          virtuagym_member_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          date_inclusion?: string
+          email?: string
+          id?: string
+          medecin_referent?: string | null
+          nom?: string
+          preferences_communication?: Json | null
+          prenom?: string
+          questionnaire_completed?: boolean
+          statut?: string
+          subscription_active?: boolean
+          telephone?: string
+          user_id: string
+          virtuagym_member_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          date_inclusion?: string
+          email?: string
+          id?: string
+          medecin_referent?: string | null
+          nom?: string
+          preferences_communication?: Json | null
+          prenom?: string
+          questionnaire_completed?: boolean
+          statut?: string
+          subscription_active?: boolean
+          telephone?: string
+          user_id?: string
+          virtuagym_member_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          role?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          id: string
+          mollie_payment_id: string | null
+          plan: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mollie_payment_id?: string | null
+          plan: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mollie_payment_id?: string | null
+          plan?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
