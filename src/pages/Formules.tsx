@@ -35,7 +35,7 @@ export default function Formules() {
 
       if (error) throw new Error(error.message || 'Erreur de paiement');
       if (data?.checkoutUrl) {
-        setCheckoutUrl(data.checkoutUrl);
+        window.location.href = data.checkoutUrl;
       } else {
         throw new Error('URL de paiement non disponible');
       }
