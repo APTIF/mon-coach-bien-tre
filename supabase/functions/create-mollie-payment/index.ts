@@ -21,8 +21,8 @@ Deno.serve(async (req) => {
     const { plan, user_id, redirect_base_url } = await req.json();
 
     const amounts: Record<string, { value: string; description: string }> = {
-      mensuel: { value: '15.00', description: 'Démarrage APTIF' },
-      programme_complet: { value: '25.00', description: 'Accompagnement APTIF' },
+      mensuel: { value: '15.00', description: 'APTIF — Démarrage' },
+      programme_complet: { value: '25.00', description: 'APTIF — Accompagnement (1er mois)' },
     };
 
     const selected = amounts[plan];
@@ -41,6 +41,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         amount: { currency: 'EUR', value: selected.value },
         description: selected.description,
+        method: ['creditcard', 'ideal', 'bancontact', 'paypal'],
         redirectUrl: `${redirect_base_url}/confirmation?payment=success`,
         cancelUrl: `${redirect_base_url}/formules?payment=cancelled`,
         metadata: { user_id, plan },
