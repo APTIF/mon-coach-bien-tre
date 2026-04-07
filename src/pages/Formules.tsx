@@ -3,14 +3,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { Star, X, Loader2 } from 'lucide-react';
+import { Star, Loader2 } from 'lucide-react';
 
 export default function Formules() {
   const { user, refreshBeneficiary, updateBeneficiary } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState<string | null>(null);
-  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (searchParams.get('payment') === 'cancelled') {
@@ -35,7 +34,7 @@ export default function Formules() {
 
       if (error) throw new Error(error.message || 'Erreur de paiement');
       if (data?.checkoutUrl) {
-        setCheckoutUrl(data.checkoutUrl);
+        window.location.href = data.checkoutUrl;
       } else {
         throw new Error('URL de paiement non disponible');
       }
@@ -86,25 +85,6 @@ export default function Formules() {
         </div>
       </div>
 
-      {/* Mollie Checkout Modal */}
-      {checkoutUrl && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-card rounded-2xl w-full max-w-lg h-[80vh] flex flex-col overflow-hidden shadow-xl">
-            <div className="flex items-center justify-between p-4 border-b border-border">
-              <h3 className="font-semibold">Paiement sécurisé</h3>
-              <button onClick={() => setCheckoutUrl(null)} className="text-muted-foreground hover:text-foreground">
-                <X size={20} />
-              </button>
-            </div>
-            <iframe
-              src={checkoutUrl}
-              className="flex-1 w-full"
-              title="Paiement Mollie"
-              allow="payment"
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
