@@ -22,7 +22,8 @@ Deno.serve(async (req) => {
 
     const amounts: Record<string, { value: string; description: string }> = {
       mensuel: { value: '15.00', description: 'APTIF — Démarrage' },
-      programme_complet: { value: '25.00', description: 'APTIF — Accompagnement (1er mois)' },
+      accompagnement_mensuel: { value: '25.00', description: 'APTIF — Accompagnement mensuel (1er mois sur 6)' },
+      accompagnement_total: { value: '150.00', description: 'APTIF — Accompagnement complet (6 mois)' },
     };
 
     const selected = amounts[plan];
