@@ -11,7 +11,8 @@ import Accueil from "@/pages/Accueil";
 import Questionnaire from "@/pages/Questionnaire";
 import Transition from "@/pages/Transition";
 import Formules from "@/pages/Formules";
-import Confirmation from "@/pages/Confirmation";
+import RdvInclusion from "@/pages/RdvInclusion";
+import ConfirmationFinale from "@/pages/ConfirmationFinale";
 import Profil from "@/pages/Profil";
 import NotFound from "@/pages/NotFound";
 
@@ -29,7 +30,8 @@ const App = () => (
             <Route path="/questionnaire" element={<ProtectedRoute><Questionnaire /></ProtectedRoute>} />
             <Route path="/transition" element={<ProtectedRoute requireQuestionnaire><Transition /></ProtectedRoute>} />
             <Route path="/formules" element={<ProtectedRoute requireQuestionnaire><Formules /></ProtectedRoute>} />
-            <Route path="/confirmation" element={<ProtectedRoute requireQuestionnaire><Confirmation /></ProtectedRoute>} />
+            <Route path="/rdvinclusion" element={<ProtectedRoute requireQuestionnaire><RdvInclusion /></ProtectedRoute>} />
+            <Route path="/confirmation" element={<ProtectedRoute requireQuestionnaire><ConfirmationFinale /></ProtectedRoute>} />
             <Route path="/profil" element={<ProtectedRoute><Profil /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
