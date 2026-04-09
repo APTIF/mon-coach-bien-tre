@@ -60,7 +60,7 @@ export default function Formules() {
         <div className="card-warm">
           <h2 className="text-xl font-bold mb-1">Démarrage</h2>
           <p className="text-3xl font-bold text-primary mb-3">15€</p>
-          <p className="text-sm text-muted-foreground mb-5">Accès app 4 semaines + programme APA standard</p>
+          <p className="text-sm text-muted-foreground mb-5">Accès à l'application APTIF + programme APA standard de 4 semaines</p>
           <button
             onClick={() => choosePlan('mensuel')}
             disabled={loading !== null}
@@ -76,6 +76,17 @@ export default function Formules() {
             <Star size={12} /> Recommandé
           </div>
           <h2 className="text-xl font-bold mb-1">Accompagnement</h2>
+          
+          {/* Dynamic price display */}
+          {accompagnementMode === 'mensuel' ? (
+            <p className="text-3xl font-bold text-primary mb-1">25€<span className="text-lg font-medium text-muted-foreground">/mois × 6 mois</span></p>
+          ) : (
+            <div className="mb-1">
+              <p className="text-3xl font-bold text-primary">140€</p>
+              <p className="text-sm text-muted-foreground">en une fois</p>
+            </div>
+          )}
+
           <p className="text-sm text-muted-foreground mb-4">Accès app PRO + programme sur mesure + entretien EAPA toutes les 4 semaines</p>
 
           {/* Payment mode toggle */}
@@ -83,11 +94,11 @@ export default function Formules() {
             <button
               type="button"
               onClick={() => setAccompagnementMode('mensuel')}
-              className={`rounded-xl p-3 text-left transition-all border-2 ${
-                accompagnementMode === 'mensuel'
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border bg-background'
-              }`}
+              className="rounded-xl p-3 text-left transition-all"
+              style={{
+                border: accompagnementMode === 'mensuel' ? '2px solid #4a90e2' : '1px solid #e8dfc4',
+                background: accompagnementMode === 'mensuel' ? '#f0f7ff' : 'white',
+              }}
             >
               <span className="block text-sm font-bold">25€/mois × 6 mois</span>
               <span className="block text-xs text-muted-foreground mt-0.5">Prélevé automatiquement chaque mois</span>
@@ -95,15 +106,15 @@ export default function Formules() {
             <button
               type="button"
               onClick={() => setAccompagnementMode('total')}
-              className={`rounded-xl p-3 text-left transition-all border-2 relative ${
-                accompagnementMode === 'total'
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border bg-background'
-              }`}
+              className="rounded-xl p-3 text-left transition-all relative"
+              style={{
+                border: accompagnementMode === 'total' ? '2px solid #4a90e2' : '1px solid #e8dfc4',
+                background: accompagnementMode === 'total' ? '#f0f7ff' : 'white',
+              }}
             >
               <span className="absolute -top-2 right-2 text-[10px] font-bold bg-accent text-accent-foreground px-2 py-0.5 rounded-full">Flexibilité maximale</span>
-              <span className="block text-sm font-bold">150€ en une fois</span>
-              <span className="block text-xs text-muted-foreground mt-0.5">Paiement unique, économisez 0€</span>
+              <span className="block text-sm font-bold">140€ en une fois</span>
+              <span className="block text-xs text-muted-foreground mt-0.5">Paiement unique</span>
             </button>
           </div>
 
@@ -114,10 +125,8 @@ export default function Formules() {
           >
             {loading === accompagnementPlan ? (
               <><Loader2 size={16} className="animate-spin" /> Traitement...</>
-            ) : accompagnementMode === 'mensuel' ? (
-              'Payer 25€ ce mois'
             ) : (
-              'Payer 150€'
+              'Choisir cette formule'
             )}
           </button>
         </div>

@@ -20,13 +20,13 @@ Deno.serve(async (req) => {
 
     const { plan, user_id, redirect_base_url } = await req.json();
 
-    const amounts: Record<string, { value: string; description: string }> = {
-      mensuel: { value: '15.00', description: 'APTIF — Démarrage' },
-      accompagnement_mensuel: { value: '25.00', description: 'APTIF — Accompagnement mensuel (1er mois sur 6)' },
-      accompagnement_total: { value: '150.00', description: 'APTIF — Accompagnement complet (6 mois)' },
+    const plans: Record<string, { value: string; description: string; method: string[] }> = {
+      mensuel: { value: '15.00', description: 'APTIF — Démarrage', method: ['creditcard'] },
+      accompagnement_mensuel: { value: '25.00', description: 'APTIF — Accompagnement mensuel (1er mois)', method: ['directdebit'] },
+      accompagnement_total: { value: '140.00', description: 'APTIF — Accompagnement complet (6 mois)', method: ['creditcard'] },
     };
 
-    const selected = amounts[plan];
+    const selected = plans[plan];
     if (!selected) {
       return new Response(JSON.stringify({ error: 'Plan invalide' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -42,8 +42,8 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         amount: { currency: 'EUR', value: selected.value },
         description: selected.description,
-        method: ['creditcard', 'ideal', 'bancontact', 'paypal'],
-        redirectUrl: `${redirect_base_url}/confirmation?payment=success`,
+        method: selected.method,
+        redirectUrl: `${redirect_base_url}/rdvinclusion?payment=success`,
         cancelUrl: `${redirect_base_url}/formules?payment=cancelled`,
         metadata: { user_id, plan },
       }),
@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
     await supabase.from('subscriptions').insert({
       user_id,
       plan,
-      statut: 'pending',
+      status: 'pending',
       mollie_payment_id: mollieData.id,
     });
 
