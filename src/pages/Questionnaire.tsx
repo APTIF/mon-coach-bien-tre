@@ -48,7 +48,7 @@ function Chip({ label, selected, onClick }: { label: string; selected: boolean; 
       type="button"
       onClick={onClick}
       className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-        selected ? 'chip-selected' : 'chip-unselected'
+        selected ? 'bg-primary text-white border-primary' : 'chip-unselected'
       }`}
     >
       {label}
@@ -62,7 +62,7 @@ function RadioOption({ label, selected, onClick }: { label: string; selected: bo
       type="button"
       onClick={onClick}
       className={`w-full text-left px-4 py-3 rounded-xl border transition-all text-sm ${
-        selected ? 'border-primary bg-primary/10 font-medium' : 'border-border bg-card'
+        selected ? 'border-primary bg-primary text-white font-medium' : 'border-border bg-card'
       }`}
     >
       {label}
@@ -172,6 +172,46 @@ export default function Questionnaire() {
         preferences_communication: prefsCom,
       }).eq('user_id', user!.id);
 
+      // Send email notification (fail silently)
+      try {
+        await supabase.functions.invoke('send-questionnaire-email', {
+          body: {
+            nom: beneficiary.nom,
+            prenom: beneficiary.prenom,
+            email: beneficiary.email,
+            telephone: beneficiary.telephone,
+            preferences_communication: prefsCom,
+            activite_actuelle: activite,
+            freins,
+            freins_autre: freinsAutre || null,
+            objectifs,
+            objectifs_autre: objectifsAutre || null,
+            motivation_score: motivation,
+            temps_assis_par_jour: tempsAssis,
+            moment_forme: momentForme,
+            type_entrainement: typeEntrainement,
+            seances_par_semaine: seancesParSemaine,
+            duree_ideale_seance: dureeIdeale,
+            a_materiel: aMateriel ?? false,
+            liste_materiel: listeMateriel || null,
+            a_materiel_fc: aMaterielFC ?? false,
+            liste_materiel_fc: listeMaterielFC.length > 0 ? listeMaterielFC : null,
+            materiel_fc_autre: materielFCAutre || null,
+            a_pathologies: aPathologies ?? false,
+            liste_pathologies: listePathologies.length > 0 ? listePathologies : null,
+            pathologies_autre: pathologiesAutre || null,
+            a_traitement: aTraitement ?? false,
+            liste_traitements: listeTraitements || null,
+            a_douleurs: aDouleurs ?? false,
+            description_douleurs: descriptionDouleurs || null,
+            a_test_effort: aTestEffort ?? false,
+            resultats_test_effort: resultatsTestEffort || null,
+          },
+        });
+      } catch {
+        // Fail silently — email not blocking
+      }
+
       await refreshBeneficiary();
       navigate('/transition');
     } catch (err: any) {
@@ -237,7 +277,7 @@ export default function Questionnaire() {
         {/* Step 3 */}
         {step === 3 && (
           <div className="space-y-3">
-            <h2 className="font-semibold text-lg">Activité physique actuelle</h2>
+            <h2 className="font-semibold text-lg">Pratiquez-vous une activité physique actuellement ?</h2>
             {['Aucune', 'Occasionnelle (moins d\'1 fois/semaine)', 'Régulière (1 à 2 fois/semaine)', 'Fréquente (plus de 3 fois/semaine)'].map(o => (
               <RadioOption key={o} label={o} selected={activite === o} onClick={() => setActivite(o)} />
             ))}
@@ -247,7 +287,7 @@ export default function Questionnaire() {
         {/* Step 4 */}
         {step === 4 && (
           <div className="space-y-3">
-            <h2 className="font-semibold text-lg">Freins à l'activité physique</h2>
+            <h2 className="font-semibold text-lg">Qu'est-ce qui vous freine actuellement dans la pratique d'une activité physique ?</h2>
             <div className="flex flex-wrap gap-2">
               {['Manque de temps', 'Fatigue/douleurs', 'Manque de motivation', 'Peur de mal faire', 'Je ne sais pas par où commencer', 'Autre'].map(f => (
                 <Chip key={f} label={f} selected={freins.includes(f)} onClick={() => toggleArray(freins, f, setFreins)} />
@@ -260,7 +300,7 @@ export default function Questionnaire() {
         {/* Step 5 */}
         {step === 5 && (
           <div className="space-y-3">
-            <h2 className="font-semibold text-lg">Vos objectifs</h2>
+            <h2 className="font-semibold text-lg">Pourquoi souhaitez-vous démarrer un programme d'activité physique ?</h2>
             <div className="flex flex-wrap gap-2">
               {['Améliorer ma santé', 'Retrouver de l\'énergie', 'Réduire mes douleurs', 'Mieux vivre avec ma maladie', 'Reprendre confiance en mon corps', 'Être moins essoufflé', 'Autre'].map(o => (
                 <Chip key={o} label={o} selected={objectifs.includes(o)} onClick={() => toggleArray(objectifs, o, setObjectifs)} />
@@ -273,8 +313,7 @@ export default function Questionnaire() {
         {/* Step 6 */}
         {step === 6 && (
           <div className="space-y-4">
-            <h2 className="font-semibold text-lg">Motivation</h2>
-            <p className="text-sm text-muted-foreground">À quel point êtes-vous motivé(e) à démarrer ce programme ?</p>
+            <h2 className="font-semibold text-lg">Sur une échelle de 0 à 10, à quel point êtes-vous motivé(e) à démarrer ce programme ?</h2>
             <div className="space-y-2">
               <input type="range" min={0} max={10} value={motivation} onChange={e => setMotivation(Number(e.target.value))} className="w-full accent-primary" />
               <div className="flex justify-between text-xs text-muted-foreground"><span>0</span><span className="text-lg font-bold text-primary">{motivation}</span><span>10</span></div>
@@ -287,13 +326,13 @@ export default function Questionnaire() {
           <div className="space-y-5">
             <div className="space-y-3">
               <h2 className="font-semibold text-lg">Mode de vie</h2>
-              <p className="text-sm font-medium">Temps assis par jour</p>
+              <p className="text-sm font-medium">En moyenne, combien d'heures passez-vous assis(e) par jour ?</p>
               {['Moins de 4h', '4 à 6h', 'Plus de 6h', 'Je ne sais pas'].map(o => (
                 <RadioOption key={o} label={o} selected={tempsAssis === o} onClick={() => setTempsAssis(o)} />
               ))}
             </div>
             <div className="space-y-3">
-              <p className="text-sm font-medium">Moment de forme</p>
+              <p className="text-sm font-medium">À quels moments de la journée vous sentez-vous le (la) plus en forme pour bouger ?</p>
               {['Matin', 'Après-midi', 'Soirée', 'Variable'].map(o => (
                 <RadioOption key={o} label={o} selected={momentForme === o} onClick={() => setMomentForme(o)} />
               ))}
@@ -306,13 +345,13 @@ export default function Questionnaire() {
           <div className="space-y-5">
             <h2 className="font-semibold text-lg">Préférences d'entraînement</h2>
             <div className="space-y-3">
-              <p className="text-sm font-medium">Type d'entraînement</p>
+              <p className="text-sm font-medium">Quel type d'entraînement préférez-vous ou souhaiteriez-vous découvrir ?</p>
               {['Renforcement musculaire', 'Endurance', 'Renforcement + Endurance', 'Équilibre', 'Souplesse/Mobilité', 'Je ne sais pas encore'].map(o => (
                 <RadioOption key={o} label={o} selected={typeEntrainement === o} onClick={() => setTypeEntrainement(o)} />
               ))}
             </div>
             <div className="space-y-3">
-              <p className="text-sm font-medium">Séances par semaine</p>
+              <p className="text-sm font-medium">Combien de séances d'activité physique par semaine souhaiteriez-vous réaliser ?</p>
               <div className="flex flex-wrap gap-2">
                 {['1', '2', '3', '4 ou plus', 'Je ne sais pas'].map(o => (
                   <Chip key={o} label={o} selected={seancesParSemaine === o} onClick={() => setSeancesParSemaine(o)} />
@@ -320,7 +359,7 @@ export default function Questionnaire() {
               </div>
             </div>
             <div className="space-y-3">
-              <p className="text-sm font-medium">Durée idéale d'une séance</p>
+              <p className="text-sm font-medium">Quelle est pour vous la durée idéale d'une séance d'activité physique ?</p>
               {['Moins de 15 min', '15 à 30 min', 'Plus de 30 min', 'Je ne sais pas'].map(o => (
                 <RadioOption key={o} label={o} selected={dureeIdeale === o} onClick={() => setDureeIdeale(o)} />
               ))}
