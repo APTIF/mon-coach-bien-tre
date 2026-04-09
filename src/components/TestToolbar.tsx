@@ -1,32 +1,62 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
 
 export default function TestToolbar() {
-  const { user, updateBeneficiary } = useAuth();
+  const { user, refreshBeneficiary } = useAuth();
   const navigate = useNavigate();
 
   if (import.meta.env.PROD || !user) return null;
 
-  const resetParcours = () => {
-    updateBeneficiary({
-      questionnaire_completed: false,
-      subscription_active: false,
-      statut: 'en_pause',
-    });
-    navigate('/accueil');
+  const resetParcours = async () => {
+    try {
+      await supabase
+        .from('beneficiaries')
+        .update({ questionnaire_completed: false, subscription_active: false, statut: 'en_pause' })
+        .eq('user_id', user.id);
+
+      await supabase
+        .from('questionnaire_inclusion')
+        .delete()
+        .eq('user_id', user.id);
+
+      await refreshBeneficiary();
+      navigate('/accueil');
+      toast.success('Parcours réinitialisé');
+    } catch (e: any) {
+      toast.error(e.message || 'Erreur reset');
+    }
   };
 
-  const skipQuestionnaire = () => {
-    updateBeneficiary({ questionnaire_completed: true });
-    navigate('/formules');
+  const skipQuestionnaire = async () => {
+    try {
+      await supabase
+        .from('beneficiaries')
+        .update({ questionnaire_completed: true })
+        .eq('user_id', user.id);
+
+      await refreshBeneficiary();
+      navigate('/formules');
+      toast.success('Questionnaire passé');
+    } catch (e: any) {
+      toast.error(e.message || 'Erreur');
+    }
   };
 
-  const skipPayment = () => {
-    updateBeneficiary({
-      subscription_active: true,
-      statut: 'actif',
-    });
-    navigate('/confirmation');
+  const skipPayment = async () => {
+    try {
+      await supabase
+        .from('beneficiaries')
+        .update({ subscription_active: true, statut: 'actif' })
+        .eq('user_id', user.id);
+
+      await refreshBeneficiary();
+      navigate('/confirmation');
+      toast.success('Paiement passé');
+    } catch (e: any) {
+      toast.error(e.message || 'Erreur');
+    }
   };
 
   return (
@@ -37,7 +67,7 @@ export default function TestToolbar() {
       <button onClick={skipQuestionnaire} className="bg-accent text-accent-foreground text-xs px-3 py-1.5 rounded-lg font-medium opacity-70 hover:opacity-100">
         Passer questionnaire
       </button>
-      <button onClick={skipPayment} className="bg-success text-success-foreground text-xs px-3 py-1.5 rounded-lg font-medium opacity-70 hover:opacity-100">
+      <button onClick={skipPayment} className="bg-green-600 text-white text-xs px-3 py-1.5 rounded-lg font-medium opacity-70 hover:opacity-100">
         Passer paiement
       </button>
     </div>
