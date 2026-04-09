@@ -52,7 +52,7 @@ export default function TestToolbar() {
         .eq('user_id', user.id);
 
       await refreshBeneficiary();
-      navigate('/confirmation');
+      navigate('/rdvinclusion');
       toast.success('Paiement passé');
     } catch (e: any) {
       toast.error(e.message || 'Erreur');

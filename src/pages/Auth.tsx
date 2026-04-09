@@ -32,14 +32,14 @@ export default function Auth() {
   if (user && beneficiary) {
     if (!beneficiary.questionnaire_completed) return <Navigate to="/accueil" replace />;
     if (!beneficiary.subscription_active) return <Navigate to="/formules" replace />;
-    return <Navigate to="/confirmation" replace />;
+    return <Navigate to="/rdvinclusion" replace />;
   }
 
   const getRedirectPath = (b: typeof beneficiary) => {
     if (!b) return '/accueil';
     if (!b.questionnaire_completed) return '/accueil';
     if (!b.subscription_active) return '/formules';
-    return '/confirmation';
+    return '/rdvinclusion';
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -99,9 +99,9 @@ export default function Auth() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <img src="/aptif-logo.png" alt="APTIF" className="mx-auto" style={{ maxHeight: '64px', width: 'auto' }} />
+          <img src="/aptif-logo.png" alt="APTIF" className="h-24 w-auto mx-auto" />
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            Votre programme d'activité physique adapté à votre santé
+            Je suis APTIF pour ma santé
           </p>
         </div>
 
