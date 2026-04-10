@@ -20,10 +20,10 @@ Deno.serve(async (req) => {
 
     const { plan, user_id, redirect_base_url } = await req.json();
 
-    const plans: Record<string, { value: string; description: string; method: string[] }> = {
-      mensuel: { value: '15.00', description: 'APTIF — Démarrage', method: ['creditcard'] },
-      accompagnement_mensuel: { value: '25.00', description: 'APTIF — Accompagnement mensuel (1er mois)', method: ['directdebit'] },
-      accompagnement_total: { value: '140.00', description: 'APTIF — Accompagnement complet (6 mois)', method: ['creditcard'] },
+    const plans: Record<string, { value: string; description: string }> = {
+      mensuel: { value: '15.00', description: 'APTIF — Démarrage' },
+      accompagnement_mensuel: { value: '25.00', description: 'APTIF — Accompagnement mensuel (1er mois)' },
+      accompagnement_total: { value: '140.00', description: 'APTIF — Accompagnement complet (6 mois)' },
     };
 
     const selected = plans[plan];
@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         amount: { currency: 'EUR', value: selected.value },
         description: selected.description,
-        method: selected.method,
+        
         redirectUrl: `${redirect_base_url}/rdvinclusion?payment=success`,
         cancelUrl: `${redirect_base_url}/formules?payment=cancelled`,
         metadata: { user_id, plan },
