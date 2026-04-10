@@ -20,9 +20,9 @@ Deno.serve(async (req) => {
 
     const { plan, user_id, redirect_base_url } = await req.json();
 
-    const plans: Record<string, { value: string; description: string }> = {
+    const plans: Record<string, { value: string; description: string; method?: string[] }> = {
       mensuel: { value: '15.00', description: 'APTIF — Démarrage' },
-      accompagnement_mensuel: { value: '25.00', description: 'APTIF — Accompagnement mensuel (1er mois)' },
+      accompagnement_mensuel: { value: '25.00', description: 'APTIF — Accompagnement mensuel (1er mois)', method: ['directdebit'] },
       accompagnement_total: { value: '140.00', description: 'APTIF — Accompagnement complet (6 mois)' },
     };
 
@@ -33,20 +33,17 @@ Deno.serve(async (req) => {
       });
     }
 
-    const mollieRes = await fetch('https://api.mollie.com/v2/payments', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${MOLLIE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        amount: { currency: 'EUR', value: selected.value },
-        description: selected.description,
-        
-        redirectUrl: `${redirect_base_url}/rdvinclusion?payment=success`,
-        cancelUrl: `${redirect_base_url}/formules?payment=cancelled`,
-        metadata: { user_id, plan },
-      }),
+    const mollieBody: Record<string, unknown> = {
+      amount: { currency: 'EUR', value: selected.value },
+      description: selected.description,
+      redirectUrl: `${redirect_base_url}/rdvinclusion?payment=success`,
+      cancelUrl: `${redirect_base_url}/formules?payment=cancelled`,
+      metadata: { user_id, plan },
+    };
+
+    if (selected.method) {
+      mollieBody.method = selected.method;
+    }
     });
 
     const mollieData = await mollieRes.json();
