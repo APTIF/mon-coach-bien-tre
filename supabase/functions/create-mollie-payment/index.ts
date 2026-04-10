@@ -44,6 +44,14 @@ Deno.serve(async (req) => {
     if (selected.method) {
       mollieBody.method = selected.method;
     }
+
+    const mollieRes = await fetch('https://api.mollie.com/v2/payments', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${MOLLIE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(mollieBody),
     });
 
     const mollieData = await mollieRes.json();
