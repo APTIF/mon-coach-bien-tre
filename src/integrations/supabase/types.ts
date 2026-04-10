@@ -186,7 +186,9 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          mollie_customer_id: string | null
           mollie_payment_id: string | null
+          mollie_subscription_id: string | null
           plan: string
           status: string
           user_id: string
@@ -194,7 +196,9 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          mollie_customer_id?: string | null
           mollie_payment_id?: string | null
+          mollie_subscription_id?: string | null
           plan: string
           status?: string
           user_id: string
@@ -202,7 +206,9 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          mollie_customer_id?: string | null
           mollie_payment_id?: string | null
+          mollie_subscription_id?: string | null
           plan?: string
           status?: string
           user_id?: string
