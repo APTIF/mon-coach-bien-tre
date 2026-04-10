@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         amount: { currency: 'EUR', value: selected.value },
         description: selected.description,
-        method: selected.method,
+        
         redirectUrl: `${redirect_base_url}/rdvinclusion?payment=success`,
         cancelUrl: `${redirect_base_url}/formules?payment=cancelled`,
         metadata: { user_id, plan },
