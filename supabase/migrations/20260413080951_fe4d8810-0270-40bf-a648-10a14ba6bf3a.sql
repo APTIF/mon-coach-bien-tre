@@ -1,0 +1,1 @@
+ALTER TABLE public.beneficiaries ADD COLUMN mollie_customer_id text;

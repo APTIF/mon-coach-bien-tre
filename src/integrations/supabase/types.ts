@@ -21,6 +21,7 @@ export type Database = {
           email: string
           id: string
           medecin_referent: string | null
+          mollie_customer_id: string | null
           nom: string
           preferences_communication: Json | null
           prenom: string
@@ -37,6 +38,7 @@ export type Database = {
           email?: string
           id?: string
           medecin_referent?: string | null
+          mollie_customer_id?: string | null
           nom?: string
           preferences_communication?: Json | null
           prenom?: string
@@ -53,6 +55,7 @@ export type Database = {
           email?: string
           id?: string
           medecin_referent?: string | null
+          mollie_customer_id?: string | null
           nom?: string
           preferences_communication?: Json | null
           prenom?: string
