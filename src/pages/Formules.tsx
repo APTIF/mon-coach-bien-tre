@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { Star, Loader2 } from 'lucide-react';
 
 export default function Formules() {
-  const { user } = useAuth();
+  const { user, beneficiary } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState<string | null>(null);
