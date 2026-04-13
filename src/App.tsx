@@ -36,6 +36,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <BottomNav />
+          {/* PERMANENT TEST TOOLBAR - DO NOT REMOVE */}
           <TestToolbar />
         </AuthProvider>
       </BrowserRouter>
