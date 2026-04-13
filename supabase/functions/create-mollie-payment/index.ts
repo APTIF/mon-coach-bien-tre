@@ -20,9 +20,9 @@ Deno.serve(async (req) => {
 
     const { plan, user_id, redirect_base_url } = await req.json();
 
-    const plans: Record<string, { value: string; description: string; isSepaRecurring?: boolean }> = {
+    const plans: Record<string, { value: string; description: string }> = {
       mensuel: { value: '15.00', description: 'APTIF — Démarrage' },
-      accompagnement_mensuel: { value: '25.00', description: 'APTIF — Accompagnement mensuel', isSepaRecurring: true },
+      accompagnement_mensuel: { value: '25.00', description: 'APTIF — Accompagnement mois 1/6' },
       accompagnement_total: { value: '140.00', description: 'APTIF — Accompagnement complet (6 mois)' },
     };
 
@@ -43,26 +43,24 @@ Deno.serve(async (req) => {
     };
 
     // --- SEPA recurring flow (accompagnement_mensuel) ---
-    if (selected.isSepaRecurring) {
-      // 1. Check if user already has a Mollie customer
-      const { data: existingSub } = await supabase
-        .from('subscriptions')
-        .select('mollie_customer_id')
+    if (plan === 'accompagnement_mensuel') {
+      // Fetch beneficiary info for Mollie customer creation
+      const { data: beneficiary } = await supabase
+        .from('beneficiaries')
+        .select('id, prenom, nom, email, mollie_customer_id')
         .eq('user_id', user_id)
-        .not('mollie_customer_id', 'is', null)
-        .limit(1)
         .maybeSingle();
 
-      let customerId = existingSub?.mollie_customer_id;
+      let customerId = beneficiary?.mollie_customer_id;
 
-      // 2. Create Mollie customer if needed
+      // Step 1: Create Mollie customer if needed
       if (!customerId) {
         const customerRes = await fetch('https://api.mollie.com/v2/customers', {
           method: 'POST',
           headers: mollieHeaders,
           body: JSON.stringify({
-            name: `User ${user_id}`,
-            metadata: { user_id },
+            name: `${beneficiary?.prenom || ''} ${beneficiary?.nom || ''}`.trim() || `User ${user_id}`,
+            email: beneficiary?.email || undefined,
           }),
         });
         const customerData = await customerRes.json();
@@ -73,19 +71,25 @@ Deno.serve(async (req) => {
           });
         }
         customerId = customerData.id;
+
+        // Step 3: Store customer ID in beneficiaries
+        if (beneficiary?.id) {
+          await supabase
+            .from('beneficiaries')
+            .update({ mollie_customer_id: customerId })
+            .eq('id', beneficiary.id);
+        }
       }
 
-      // 3. Create first payment (sequenceType: first) to get SEPA mandate
-      const webhookUrl = `${supabaseUrl}/functions/v1/mollie-webhook`;
+      // Step 2: Create first payment with mandate
       const firstPaymentBody = {
         amount: { currency: 'EUR', value: selected.value },
-        description: `${selected.description} — 1er prélèvement`,
+        description: selected.description,
         redirectUrl: `${redirect_base_url}/rdvinclusion?payment=success`,
         cancelUrl: `${redirect_base_url}/formules?payment=cancelled`,
-        webhookUrl,
-        method: 'directdebit',
         customerId,
         sequenceType: 'first',
+        method: 'directdebit',
         metadata: { user_id, plan, mollie_customer_id: customerId },
       };
 
@@ -103,7 +107,7 @@ Deno.serve(async (req) => {
         });
       }
 
-      // 4. Store subscription record
+      // Store subscription record
       await supabase.from('subscriptions').insert({
         user_id,
         plan,
@@ -118,7 +122,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // --- Standard one-off payment flow ---
+    // --- Standard one-off payment flow (mensuel & accompagnement_total) ---
     const mollieBody = {
       amount: { currency: 'EUR', value: selected.value },
       description: selected.description,
