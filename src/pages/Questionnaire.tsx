@@ -207,45 +207,6 @@ export default function Questionnaire() {
         preferences_communication: prefsCom,
       }).eq('user_id', user!.id);
 
-      // Send email notification (fail silently)
-      try {
-        await supabase.functions.invoke('send-questionnaire-email', {
-          body: {
-            nom: beneficiary.nom,
-            prenom: beneficiary.prenom,
-            email: beneficiary.email,
-            telephone: beneficiary.telephone,
-            preferences_communication: prefsCom,
-            activite_actuelle: activite,
-            freins,
-            freins_autre: freinsAutre || null,
-            objectifs,
-            objectifs_autre: objectifsAutre || null,
-            motivation_score: motivation,
-            temps_assis_par_jour: tempsAssis,
-            moment_forme: momentForme,
-            type_entrainement: typeEntrainement,
-            seances_par_semaine: seancesParSemaine,
-            duree_ideale_seance: dureeIdeale,
-            a_materiel: aMateriel ?? false,
-            liste_materiel: listeMateriel || null,
-            a_materiel_fc: aMaterielFC ?? false,
-            liste_materiel_fc: listeMaterielFC.length > 0 ? listeMaterielFC : null,
-            materiel_fc_autre: materielFCAutre || null,
-            a_pathologies: aPathologies ?? false,
-            liste_pathologies: listePathologies.length > 0 ? listePathologies : null,
-            pathologies_autre: pathologiesAutre || null,
-            a_traitement: aTraitement ?? false,
-            liste_traitements: listeTraitements || null,
-            a_douleurs: aDouleurs ?? false,
-            description_douleurs: descriptionDouleurs || null,
-            a_test_effort: aTestEffort ?? false,
-            resultats_test_effort: resultatsTestEffort || null,
-          },
-        });
-      } catch {
-        // Fail silently — email not blocking
-      }
 
       await refreshBeneficiary();
       navigate('/transition');
