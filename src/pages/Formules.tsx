@@ -29,6 +29,8 @@ export default function Formules() {
         body: {
           plan,
           user_id: user.id,
+          user_email: beneficiary?.email || user.email,
+          user_name: beneficiary ? `${beneficiary.prenom} ${beneficiary.nom}`.trim() : '',
           redirect_base_url: window.location.origin,
         },
       });
