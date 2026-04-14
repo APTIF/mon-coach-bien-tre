@@ -63,7 +63,6 @@ Deno.serve(async (req) => {
           cancelUrl: `${redirect_base_url}/formules?payment=cancelled`,
           customerId: mollieCustomerId,
           sequenceType: 'first',
-          method: 'directdebit',
           metadata: { user_id, plan: 'accompagnement_mensuel', mois: 1 },
         }),
       });
