@@ -80,6 +80,12 @@ Deno.serve(async (req) => {
         mollie_customer_id: mollieCustomerId,
       });
 
+      await supabase.from('payment_logs').insert({
+        user_id, event: 'payment_initiated', plan: 'accompagnement_mensuel',
+        mollie_payment_id: paymentData.id, amount: '25.00', status: 'pending',
+        metadata: { mollie_customer_id: mollieCustomerId, sequence: 'first' },
+      });
+
       return new Response(JSON.stringify({ 
         checkoutUrl: paymentData._links?.checkout?.href, 
         paymentId: paymentData.id 
@@ -115,6 +121,11 @@ Deno.serve(async (req) => {
         status: 'pending', mollie_payment_id: paymentData.id,
       });
 
+      await supabase.from('payment_logs').insert({
+        user_id, event: 'payment_initiated', plan: 'mensuel',
+        mollie_payment_id: paymentData.id, amount: '15.00', status: 'pending',
+      });
+
       return new Response(JSON.stringify({ 
         checkoutUrl: paymentData._links?.checkout?.href,
         paymentId: paymentData.id 
@@ -148,6 +159,11 @@ Deno.serve(async (req) => {
       await supabase.from('subscriptions').insert({
         user_id, plan: 'accompagnement_total',
         status: 'pending', mollie_payment_id: paymentData.id,
+      });
+
+      await supabase.from('payment_logs').insert({
+        user_id, event: 'payment_initiated', plan: 'accompagnement_total',
+        mollie_payment_id: paymentData.id, amount: '140.00', status: 'pending',
       });
 
       return new Response(JSON.stringify({ 

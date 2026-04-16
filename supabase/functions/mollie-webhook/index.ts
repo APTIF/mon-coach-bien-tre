@@ -54,6 +54,18 @@ Deno.serve(async (req) => {
       .update({ status: newStatus })
       .eq('mollie_payment_id', paymentId);
 
+    // Log payment event
+    const metadata = payment.metadata || {};
+    await supabase.from('payment_logs').insert({
+      user_id: metadata.user_id,
+      event: `webhook_${payment.status}`,
+      plan: metadata.plan,
+      mollie_payment_id: paymentId,
+      amount: payment.amount?.value,
+      status: payment.status,
+      metadata: { sequenceType: payment.sequenceType, customerId: payment.customerId },
+    });
+
     // If this was a successful first SEPA payment, create the recurring subscription
     if (payment.status === 'paid' && payment.sequenceType === 'first') {
       const customerId = payment.customerId;
