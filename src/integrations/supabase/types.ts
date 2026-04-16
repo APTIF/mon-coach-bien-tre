@@ -68,6 +68,42 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_logs: {
+        Row: {
+          amount: string | null
+          created_at: string
+          event: string
+          id: string
+          metadata: Json | null
+          mollie_payment_id: string | null
+          plan: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          amount?: string | null
+          created_at?: string
+          event: string
+          id?: string
+          metadata?: Json | null
+          mollie_payment_id?: string | null
+          plan?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: string | null
+          created_at?: string
+          event?: string
+          id?: string
+          metadata?: Json | null
+          mollie_payment_id?: string | null
+          plan?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
