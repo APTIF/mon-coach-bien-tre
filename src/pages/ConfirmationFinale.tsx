@@ -36,6 +36,37 @@ export default function ConfirmationFinale() {
       <p className="text-muted-foreground leading-relaxed">
         Votre inscription au programme APTIF est confirmée. Un Expert APA va prendre contact avec vous prochainement pour votre entretien d'inclusion.
       </p>
+
+      <div>
+        <div style={{ borderTop: '1px solid #e8dfc4', margin: '24px 0' }} />
+        <div className="text-center">
+          <div style={{ fontSize: '32px' }}>📱</div>
+          <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#2a2a2a' }}>
+            Préparez votre programme
+          </h2>
+          <p style={{ fontSize: '13px', color: '#888', lineHeight: 1.7, margin: '10px 20px' }}>
+            Votre rendez-vous d'inclusion avec un Expert APA sera l'occasion de finaliser votre programme personnalisé sur l'application APTIF. En attendant, téléchargez dès maintenant l'application pour la découvrir !
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '16px' }}>
+            <a
+              href="https://apps.apple.com/ca/iphone/search?l=fr-CA&term=aptif"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ background: '#2a2a2a', color: 'white', borderRadius: '12px', padding: '12px 20px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}
+            >
+              🍎 App Store
+            </a>
+            <a
+              href="https://play.google.com/store/apps/details?id=digifit.android.virtuagym.pro.aptif"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ background: '#4a90e2', color: 'white', borderRadius: '12px', padding: '12px 20px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}
+            >
+              ▶ Google Play
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
